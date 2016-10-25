@@ -1,11 +1,12 @@
+import taskGenerator
+from flask import Flask, request, render_template
+
 try:
     from os import getuid
-
 except ImportError:
     def getuid():
         return 4000
 
-from flask import Flask, request, render_template
 generator = taskGenerator.TaskGenerator('subjects.txt', 'tails.txt')
 
 app = Flask(__name__)
