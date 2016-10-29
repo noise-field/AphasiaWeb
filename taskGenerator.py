@@ -4,7 +4,17 @@ import gensim.models.word2vec as vec
 import pymorphy2
 import random
 
-class TaskGenerator:
+
+class SingletonGenerator(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(SingletonGenerator, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class TaskGenerator(metaclass=SingletonGenerator):
     def __get_sentences(self, filename):
         # Load all sentences from a ruscorpora file in a list
         tree = ET.parse(filename)
