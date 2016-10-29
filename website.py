@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask import render_template
 import taskGenerator
 import webbrowser
@@ -30,7 +30,7 @@ def result():
 		except:
 			pass
 	print(new_task)
-	return json.dumps(new_task)
+	return jsonify(**new_task)
 
 @app.route('/topic', methods=['GET'])
 def topic():

@@ -11,19 +11,17 @@
 			$('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
 			$.ajax({
 					url: '/result',
-					data: $('form').serialize(),
 					type: 'POST',
 					success: function(response) {
-						info = $.parseJSON(response)
-						$("#sentence").text(info.task);
+						$("#sentence").text(response.task)
 						correct_num = Math.floor(Math.random() * 4)
 						$("#options input").attr('correct', '0')
-						$("#options input:eq(" + correct_num + ")").attr({'value': info.options[0], 'correct': '1'});
+						$("#options input:eq(" + correct_num + ")").attr({'value': response.options[0], 'correct': '1'});
 						j = 1;
-						for (i = 0; i < 4 && j < info.options.length; ++i) {
+						for (i = 0; i < 4 && j < response.options.length; ++i) {
 							if (i == correct_num)
 								continue;
-							$("#options input:eq(" + i + ")").attr('value', info.options[j++]);
+							$("#options input:eq(" + i + ")").attr('value', response.options[j++]);
 						}
 					}
 				});
