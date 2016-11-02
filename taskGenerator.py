@@ -1,4 +1,5 @@
-import os, re
+import os
+import re
 import xml.etree.ElementTree as ET
 import gensim.models.word2vec as vec
 import pymorphy2

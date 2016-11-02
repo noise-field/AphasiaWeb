@@ -1,5 +1,6 @@
 import taskGenerator
-from flask import Flask, request, render_template
+import logging
+from flask import Flask, request, render_template, jsonify, json
 
 try:
     from os import getuid
@@ -7,36 +8,39 @@ except ImportError:
     def getuid():
         return 4000
 
-generator = taskGenerator.TaskGenerator('subjects.txt', 'tails.txt')
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def hello():
     return render_template('index.html')
 
+
 @app.route('/index')
 def index():
     return render_template('index.html')
-    
-from flask import request, json
+
+
 @app.route('/result', methods=['POST'])
 def result():
-    new_task = None
-    global generator
-    while True:
-        try:
-            new_task = generator.getRandom(300)
-            break
-        except:
-            pass
-    print(new_task)
-    return json.dumps(new_task)
+    try:
+        new_task = None
+        generator = taskGenerator.TaskGenerator('subjects.txt', 'tails.txt')
+        new_task = generator.getRandom(300)
+        print(new_task)
+        # return json.dumps(new_task)
+        return jsonify(**new_task)
+    except Exception as e:
+        logging.error(str(e))
+        return jsonify(**{"task": "Произошла ошибка. Попробуйте обновить страницу",
+                          "options": [""] * 4})
+
 
 @app.route('/topic', methods=['GET'])
 def topic():
-    global generator
-    #print(request.args['topic_name'])
+    generator = taskGenerator.TaskGenerator('subjects.txt', 'tails.txt')
+    # print(request.args['topic_name'])
     topic_name = request.args['topic_name']
     generator.changeTopic(topic_name)
     return 'OK'
