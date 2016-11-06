@@ -12,7 +12,7 @@ except ImportError:
 
 
 app = Flask(__name__)
-
+AVAILABLE_TASKS = ["grammar", "semantics"]
 
 @app.route('/')
 def hello():
@@ -24,20 +24,37 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/semantics')
-def semantics():
-    return render_template('semantics.html')
+# @app.route('/semantics')
+# def semantics():
+#     return render_template('semantics.html')
+#
+#
+# @app.route('/grammar')
+# def grammar():
+#     return render_template('grammar.html')
 
 
 @app.route('/grammar')
-def grammar():
-    return render_template('grammar.html')
+@app.route('/semantics')
+def tasks():
+    path = request.path.strip("/")
+    if path in AVAILABLE_TASKS:
+        if path == "grammar":
+            kind = "grammar"
+        if path == "semantics":
+            kind = "semantic"
+        else:
+            return render_template('index.html')
+        return render_template('task.html', kind=kind)
+    else:
+        return render_template('index.html')
 
 
 @app.route('/semantic_task', methods=['POST'])
 def get_semantic_task():
     try:
         generator = semantic_generator.TaskGenerator()
+        generator.change_topic(request.form['topic'])
         new_task = generator.get_random(300)
         logging.info(new_task)
         # return json.dumps(new_task)
