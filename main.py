@@ -1,4 +1,4 @@
-import task_generator
+import semantic_generator
 import logging
 from flask import Flask, request, render_template, jsonify, json
 
@@ -22,13 +22,12 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/result', methods=['POST'])
-def result():
+@app.route('/semantic_task', methods=['POST'])
+def get_semantic_task():
     try:
-        new_task = None
-        generator = task_generator.TaskGenerator('subjects.txt', 'tails.txt')
+        generator = semantic_generator.TaskGenerator()
         new_task = generator.get_random(300)
-        print(new_task)
+        logging.info(new_task)
         # return json.dumps(new_task)
         return jsonify(**new_task)
     except Exception as e:
@@ -39,7 +38,7 @@ def result():
 
 @app.route('/topic_grammar', methods=['GET'])
 def topic_grammar():
-    generator = task_generator.TaskGenerator('subjects.txt', 'tails.txt')
+    generator = semantic_generator.TaskGenerator()
     # print(request.args['topic_name'])
     topic_name = request.args['topic_name']
     generator.change_topic(topic_name)
@@ -48,7 +47,7 @@ def topic_grammar():
 
 @app.route('/topic_semantics', methods=['GET'])
 def topic_semantics():
-    generator = task_generator.TaskGenerator()
+    generator = semantic_generator.TaskGenerator()
     topic_name = request.args['topic_name']
     generator.change_topic(topic_name)
     logging.info("Semantic generation task status: OK")

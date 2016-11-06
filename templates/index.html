@@ -10,7 +10,7 @@
 		function getTask() {
 			$('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
 			$.ajax({
-					url: '/result',
+					url: '/semantic_task',
 					type: 'POST',
 					success: function(response) {
 						$("#sentence").text(response.task)
