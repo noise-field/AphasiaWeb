@@ -1,60 +1,20 @@
 <!DOCTYPE html>
-<meta charset="UTF-8">
-<html>
-	<head>
-		<title>Тренажер</title>
-		<script src="static/js/jquery-3.1.1.min.js"> </script>
-		<link rel = "stylesheet" href = "static/css/bootstrap.min.css">
-		<link rel = "stylesheet" href = "static/css/bootstrap-theme.min.css">
-		<script>
-		function getTask() {
-			$('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
-			$.ajax({
-					url: '/result',
-					type: 'POST',
-					success: function(response) {
-						$("#sentence").text(response.task)
-						correct_num = Math.floor(Math.random() * 4)
-						$("#options input").attr('correct', '0')
-						$("#options input:eq(" + correct_num + ")").attr({'value': response.options[0], 'correct': '1'});
-						j = 1;
-						for (i = 0; i < 4 && j < response.options.length; ++i) {
-							if (i == correct_num)
-								continue;
-							$("#options input:eq(" + i + ")").attr('value', response.options[j++]);
-						}
-					}
-				});
-		}
-		$(function() {
-			$('#wrapper').hide();
-			wrapper_margin_top = ($(window).height() - $("#wrapper").height())/2;
-			cat_margin_top = ($(window).height() - $("#subcat").height())/2;
-			$("#wrapper").css('marginTop', wrapper_margin_top);
-			$("#subcat").css('marginTop', cat_margin_top);
-			$('#generate').click(getTask);
-			$('#wrapper #options input').click(function() {
-				$('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
-				if ($(this).attr('correct') == '1')
-					$(this).removeClass().addClass('btn btn-lg btn-success');
-				else
-					$(this).removeClass().addClass('btn btn-lg btn-danger');
-			});
-			$("#categories input").click(function() {
-				$.ajax({
-					url: '/topic',
-					data: {'topic_name': $(this).attr('topic')},
-					type: 'GET',
-					success: function(response) {
-						$('#categories').hide();
-						getTask();
-					}
-				});
-				$('#wrapper').show();
-			});
-		});
-		</script>
-		<style>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Тренажер</title>
+    <script src="static/js/jquery-3.1.1.min.js"></script>
+    <script>
+    $(document).ready(function() {
+    $("#categories input").click(function() {
+        window.location = $(this).attr('topic')
+	});
+	});
+
+    </script>
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
+    <style>
 			body {
 				background-color: #ebebeb;
 				background-image: url(static/brain.jpg);
@@ -107,42 +67,17 @@
 			#subcat td {
 				padding: 15px 15px;
 			}
-		</style>
-	</head>
-	<body>
-		<div id = "categories">
-			<table id = "subcat">
-				<tr>
-					<td><input type = "button" class="btn btn-lg btn-default" value = "Больница" topic = "hospital"></td>
-					<td><input type = "button" class="btn btn-lg btn-default" value = "Семья" topic = "family"></td>
-					<td><input type = "button" class="btn btn-lg btn-default" value = "Профессии" topic = "profession"></td>
-				</tr>
-				<tr>
-					<td><input type = "button" class="btn btn-lg btn-default" value = "Части тела" topic = "body"></td>
-					<td><input type = "button" class="btn btn-lg btn-default" value = "Дом" topic = "house"></td>
-					<td><input type = "button" class="btn btn-lg btn-default" value = "Одежда" topic = "apparel"></td>
-				</tr>
-				<tr>
-					<td><input type = "button" class="btn btn-lg btn-default" value = "Еда" topic = "food"></td>
-					<td><input type = "button" class="btn btn-lg btn-default" value = "Животные" topic = "animals"></td>
-					<td><input type = "button" class="btn btn-lg btn-default" value = "Транспорт" topic = "transport"></td>
-				</tr>
-			</table>
-		</div>
-		<div id = "wrapper">
-			<div id = "task">Выберите наиболее подходящее по смыслу слово из списка</div>
-			<div id = "sentence"></div>
-			<table id = "options">
-				<tr>
-					<td><input type = "button" class="btn btn-lg btn-default" value = ""></td>
-					<td><input type = "button" class="btn btn-lg btn-default" value = ""></td>
-				</tr>
-				<tr>
-					<td><input type = "button" class="btn btn-lg btn-default" value = ""></td>
-					<td><input type = "button" class="btn btn-lg btn-default" value = ""></td>
-				</tr>
-			</table>
-			<input type = "button" class = "btn btn-lg btn-primary" id = "generate" style = "padding: 15px;" value = "Генерировать">
-		</div>
-	</body>
+
+    </style>
+</head>
+<body>
+<div id="categories">
+    <table id="subcat">
+        <tr>
+            <td><input type="button" class="btn btn-lg btn-default" value="Задания на смысл" topic="semantics"></td>
+            <td><input type="button" class="btn btn-lg btn-default" value="Задания на форму" topic="grammar"></td>
+        </tr>
+    </table>
+</div>
+</body>
 </html>
