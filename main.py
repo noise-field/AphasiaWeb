@@ -2,7 +2,7 @@ import semantic_generator
 import grammar_generator
 import logging
 from flask import Flask, request, render_template, jsonify
-import time
+import sys
 
 try:
     from os import getuid
@@ -59,7 +59,7 @@ def get_grammar_task():
         # return json.dumps(new_task)
         return jsonify(**new_task)
     except Exception as e:
-        logging.error(e)
+        logging.error(str(sys.exc_info()[-1].tb_lineno) + ": " + str(e))
         return jsonify(**{"task": "Произошла ошибка. Попробуйте обновить страницу",
                           "options": [""] * 4})
 

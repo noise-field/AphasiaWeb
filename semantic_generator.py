@@ -52,7 +52,7 @@ class TaskGenerator(metaclass=SingletonGenerator):
 
     def __form_verb(self, verb):
         # Puts the given verb in Present Tense and 3rd person form
-        return self.__morph.parse(verb)[0].inflect({'3per'}).word;
+        return self.__morph.parse(verb)[0].inflect({'3per'}).word
 
     def __is_bad(self, tag):
         # Check whether the word is a name, surname, etc.
