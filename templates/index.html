@@ -42,7 +42,7 @@
 			});
 			$("#categories input").click(function() {
 				$.ajax({
-					url: '/topic',
+					url: '/topic_semantics',
 					data: {'topic_name': $(this).attr('topic')},
 					type: 'GET',
 					success: function(response) {

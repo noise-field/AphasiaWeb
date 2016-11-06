@@ -1,4 +1,4 @@
-import taskGenerator
+import task_generator
 import logging
 from flask import Flask, request, render_template, jsonify, json
 
@@ -26,8 +26,8 @@ def index():
 def result():
     try:
         new_task = None
-        generator = taskGenerator.TaskGenerator('subjects.txt', 'tails.txt')
-        new_task = generator.getRandom(300)
+        generator = task_generator.TaskGenerator('subjects.txt', 'tails.txt')
+        new_task = generator.get_random(300)
         print(new_task)
         # return json.dumps(new_task)
         return jsonify(**new_task)
@@ -37,13 +37,22 @@ def result():
                           "options": [""] * 4})
 
 
-@app.route('/topic', methods=['GET'])
-def topic():
-    generator = taskGenerator.TaskGenerator('subjects.txt', 'tails.txt')
+@app.route('/topic_grammar', methods=['GET'])
+def topic_grammar():
+    generator = task_generator.TaskGenerator('subjects.txt', 'tails.txt')
     # print(request.args['topic_name'])
     topic_name = request.args['topic_name']
-    generator.changeTopic(topic_name)
-    return 'OK'
+    generator.change_topic(topic_name)
+    logging.info("Grammar generation task status: OK")
+
+
+@app.route('/topic_semantics', methods=['GET'])
+def topic_semantics():
+    generator = task_generator.TaskGenerator()
+    topic_name = request.args['topic_name']
+    generator.change_topic(topic_name)
+    logging.info("Semantic generation task status: OK")
+    return ""
 
 if __name__ == "__main__":
     app.run(port=getuid() + 1000, debug=True)

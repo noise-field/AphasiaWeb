@@ -25,7 +25,7 @@ def result():
 	global generator
 	while True:
 		try:
-			new_task = generator.getRandom(300)
+			new_task = generator.get_random(300)
 			break
 		except:
 			pass
@@ -37,7 +37,7 @@ def topic():
 	global generator
 	#print(request.args['topic_name'])
 	topic_name = request.args['topic_name']
-	generator.changeTopic(topic_name)
+	generator.change_topic(topic_name)
 	return 'OK'
 
 if __name__ == "__main__":

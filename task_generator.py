@@ -44,16 +44,16 @@ class TaskGenerator(metaclass=SingletonGenerator):
                     pass
         return result
 
-    def __init__(self, subject_file, tail_file):
+    def __init__(self):
         # Create pymorphy and word2vec objects, loading names and tails
         self.__morph = pymorphy2.MorphAnalyzer()
         self.__model = vec.Word2Vec.load('word2vec')
 
-    def __formVerb(self, verb):
+    def __form_verb(self, verb):
         # Puts the given verb in Present Tense and 3rd person form
         return self.__morph.parse(verb)[0].inflect({'3per'}).word;
 
-    def __isBad(self, tag):
+    def __is_bad(self, tag):
         # Check whether the word is a name, surname, etc.
         bad_tags = {'Abbr', 'Name', 'Surn', 'Patr', 'Geox', 'Orgn', 'Trad'}
         for bad_tag in bad_tags:
@@ -61,7 +61,7 @@ class TaskGenerator(metaclass=SingletonGenerator):
                 return True
         return False
 
-    def __getTail(self, tail, seed):
+    def __get_tail(self, tail, seed):
         # Generates the tail and a task
         split_tail = tail[0].split()
         noun = split_tail[-1]
@@ -70,7 +70,7 @@ class TaskGenerator(metaclass=SingletonGenerator):
         gender = ''
 
         for row in self.__morph.parse(noun):
-            if self.__isBad(row.tag):
+            if self.__is_bad(row.tag):
                 continue
             if {'NOUN', case} in row.tag:
                 number = row.tag.number
@@ -85,7 +85,7 @@ class TaskGenerator(metaclass=SingletonGenerator):
             for row in self.__morph.parse(word)[:3]:
                 if row.tag.POS in ['ADJF', 'NUMR']:
                     break
-                if self.__isBad(row.tag):
+                if self.__is_bad(row.tag):
                     continue
                 if gender and {'NOUN', gender} in row.tag:
                     new_nouns.append(row)
@@ -96,7 +96,7 @@ class TaskGenerator(metaclass=SingletonGenerator):
         result = [noun] + result[:3]
         return (' '.join(split_tail[:-1]) + ' ________.', result)
 
-    def changeTopic(self, topic):
+    def change_topic(self, topic):
         print(topic)
         self.__names = []
         cases = ['nomn', 'gent', 'datv', 'accs', 'ablt', 'loct']
@@ -123,10 +123,10 @@ class TaskGenerator(metaclass=SingletonGenerator):
                     else:
                         self.__tails[verb].append((' '.join(stripped_tail[:-1]), stripped_tail[-1]))
 
-    def getRandom(self, seed):
+    def get_random(self, seed):
         # Generates a full task
         name = random.choice(self.__names)
         verb = random.choice(self.__verbs)
         tail = random.choice(self.__tails[verb])
-        new_tail = self.__getTail(tail, seed)
-        return {'task' : name + ' ' + self.__formVerb(verb) + ' ' + new_tail[0], 'options' : new_tail[1]}
+        new_tail = self.__get_tail(tail, seed)
+        return {'task' : name + ' ' + self.__form_verb(verb) + ' ' + new_tail[0], 'options' : new_tail[1]}
