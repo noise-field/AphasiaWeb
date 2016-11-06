@@ -24,30 +24,30 @@ def index():
     return render_template('index.html')
 
 
-# @app.route('/semantics')
-# def semantics():
-#     return render_template('semantics.html')
-#
-#
-# @app.route('/grammar')
-# def grammar():
-#     return render_template('grammar.html')
+@app.route('/semantics')
+def semantics():
+    return render_template('semantics.html', kind="semantic")
 
 
 @app.route('/grammar')
-@app.route('/semantics')
-def tasks():
-    path = request.path.strip("/")
-    if path in AVAILABLE_TASKS:
-        if path == "grammar":
-            kind = "grammar"
-        if path == "semantics":
-            kind = "semantic"
-        else:
-            return render_template('index.html')
-        return render_template('task.html', kind=kind)
-    else:
-        return render_template('index.html')
+def grammar():
+    return render_template('grammar.html', kind="grammar")
+
+
+# @app.route('/grammar')
+# @app.route('/semantics')
+# def tasks():
+#     path = request.path.strip("/")
+#     if path in AVAILABLE_TASKS:
+#         if path == "grammar":
+#             kind = "grammar"
+#         if path == "semantics":
+#             kind = "semantic"
+#         else:
+#             return render_template('index.html')
+#         return render_template('task.html', kind=kind)
+#     else:
+#         return render_template('index.html')
 
 
 @app.route('/semantic_task', methods=['POST'])
