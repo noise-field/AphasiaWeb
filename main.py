@@ -1,6 +1,8 @@
 import semantic_generator
+import grammar_generator
 import logging
-from flask import Flask, request, render_template, jsonify, json
+from flask import Flask, request, render_template, jsonify
+import time
 
 try:
     from os import getuid
@@ -46,13 +48,30 @@ def get_semantic_task():
                           "options": [""] * 4})
 
 
-@app.route('/topic_grammar', methods=['GET'])
-def topic_grammar():
-    generator = semantic_generator.TaskGenerator()
-    # print(request.args['topic_name'])
-    topic_name = request.args['topic_name']
-    generator.change_topic(topic_name)
-    logging.info("Grammar generation task status: OK")
+@app.route('/grammar_task', methods=['POST'])
+def get_grammar_task():
+    try:
+        topic = request.form['topic']
+        logging.info("Grammar category task query:" + topic)
+        generator = grammar_generator.TaskGenerator()
+        new_task = generator.get_task(request.form['topic'])
+        # logging.info(new_task)
+        # return json.dumps(new_task)
+        return jsonify(**new_task)
+    except Exception as e:
+        logging.error(e)
+        return jsonify(**{"task": "Произошла ошибка. Попробуйте обновить страницу",
+                          "options": [""] * 4})
+
+
+# @app.route('/topic_grammar', methods=['GET'])
+# def topic_grammar():
+#     generator = grammar_generator.TaskGenerator()
+#     # # print(request.args['topic_name'])
+#     # topic_name = request.args['topic_name']
+#     # generator.change_topic(topic_name)
+#     # logging.info("Grammar generation task status: OK")
+#     return ""
 
 
 @app.route('/topic_semantics', methods=['GET'])
@@ -64,4 +83,5 @@ def topic_semantics():
     return ""
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     app.run(port=getuid() + 1000, debug=True)

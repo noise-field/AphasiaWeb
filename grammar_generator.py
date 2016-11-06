@@ -1,5 +1,8 @@
 import pymorphy2
 import random
+import os
+
+DATA_PATH = "data"
 
 
 class SingletonGenerator(type):
@@ -11,14 +14,35 @@ class SingletonGenerator(type):
         return cls._instances[cls]
 
 
-class Generator(metaclass=SingletonGenerator):
+class TaskGenerator(metaclass=SingletonGenerator):
     def __init__(self):
         self.__morph = pymorphy2.MorphAnalyzer()
+        self.data = dict()
+        with open(os.path.join(DATA_PATH, "topic_index.txt"), encoding="utf-8") as index:
+            for topic in index:
+                topic = topic.strip()
+                self.data[topic] = dict()
+                with open(os.path.join(DATA_PATH, "{}.txt".format(topic)), encoding="utf-8") as topic_file:
+                    buffer = list()
+                    self.data[topic]['tasks'] = dict()
+                    for line in topic_file:
+                        line = line.strip()
+                        if line != "":
+                            buffer.append(line)
+                        else:
+                            self.data[topic]['tasks'][buffer[0]] = buffer[1:]
+                            buffer = list()
+        print(self.data)
 
-    def getRandom(self, seed):
-        # Generates a full task
-        name = random.choice(self.__names)
-        verb = random.choice(self.__verbs)
-        tail = random.choice(self.__tails[verb])
-        new_tail = self.__getTail(tail, seed)
-        return {'task' : name + ' ' + self.__formVerb(verb) + ' ' + new_tail[0], 'options' : new_tail[1]}
+    def __form_verb(self, verb):
+        # Puts the given verb in Present Tense and 3rd person form
+        return self.__morph.parse(verb)[0].inflect({'3per'}).word;
+
+    def get_task(self, topic):
+        task_verb = random.choice(list(self.data[topic]['tasks'].keys()))
+        print(task_verb)
+        task_answer = random.choice(self.data[topic]['tasks'][task_verb])
+        print(task_answer)
+        return {"options": [task_answer] * 4,
+                "task": "Марина " + self.__form_verb(task_verb) + "________"}
+        # return {"options": ["работу", "бороду", "постель", "клиентку"], "task": "Марина устраивается на ________."}

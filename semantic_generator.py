@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import gensim.models.word2vec as vec
 import pymorphy2
 import random
+import logging
 
 
 class SingletonGenerator(type):
@@ -40,8 +41,8 @@ class TaskGenerator(metaclass=SingletonGenerator):
                 try:
                     path = os.path.join(directory, filename)
                     result += self.__get_sentences(path)
-                except:
-                    pass
+                except Exception as e:
+                    logging.exception(str(e))
         return result
 
     def __init__(self):
@@ -101,14 +102,14 @@ class TaskGenerator(metaclass=SingletonGenerator):
         self.__names = []
         cases = ['nomn', 'gent', 'datv', 'accs', 'ablt', 'loct']
 
-        with open(topic + '_subjects.txt', 'r', encoding='utf-8') as subjects:
+        with open(os.path.join("data", topic + '_subjects.txt'), 'r', encoding='utf-8') as subjects:
             for name in subjects:
                 self.__names.append(name.strip())
 
         self.__tails = dict()
         self.__verbs = []
         verb = ''
-        with open(topic + '.txt', 'r', encoding='utf-8') as tails:
+        with open(os.path.join("data", topic + '.txt'), 'r', encoding='utf-8') as tails:
             for tail in tails:
                 if not verb:
                     verb = tail.strip()
