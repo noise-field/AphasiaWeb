@@ -22,6 +22,16 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/semantics')
+def semantics():
+    return render_template('semantics.html')
+
+
+@app.route('/grammar')
+def grammar():
+    return render_template('grammar.html')
+
+
 @app.route('/semantic_task', methods=['POST'])
 def get_semantic_task():
     try:

@@ -94,7 +94,7 @@ class TaskGenerator(metaclass=SingletonGenerator):
         result = list(set(result))
         random.shuffle(result)
         result = [noun] + result[:3]
-        return (' '.join(split_tail[:-1]) + ' ________.', result)
+        return ' '.join(split_tail[:-1]) + ' ________.', result
 
     def change_topic(self, topic):
         print(topic)
@@ -129,4 +129,4 @@ class TaskGenerator(metaclass=SingletonGenerator):
         verb = random.choice(self.__verbs)
         tail = random.choice(self.__tails[verb])
         new_tail = self.__get_tail(tail, seed)
-        return {'task' : name + ' ' + self.__form_verb(verb) + ' ' + new_tail[0], 'options' : new_tail[1]}
+        return {'task': name + ' ' + self.__form_verb(verb) + ' ' + new_tail[0], 'options': new_tail[1]}
