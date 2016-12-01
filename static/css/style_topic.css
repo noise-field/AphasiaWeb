@@ -1,0 +1,63 @@
+body {
+	position: absolute;
+	margin-top: 0px !important;
+	background-image: url(../img/bg.jpg);
+	background-attachment: fixed;
+	/*background-size: cover;*/
+}
+#wrapper {
+	margin: 0 auto;
+	margin-top: 150px !important;
+	padding: 25px 50px;
+	width: 800px;
+	text-align: center;
+}
+#sentence {
+	text-align: center;
+	font-family: "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 30px;
+}
+#options {
+	width: 100%;
+	margin: 30px 0;
+}
+#options td, #categories {
+	padding: 15px 0;
+}
+#options input {
+	width: 300px;
+}
+#categories input {
+	width: 250px;
+}
+#task {
+	text-align: center;
+	color: black;
+	text-size: 15px;
+	font-family: Arial;
+	margin-bottom: 15px;
+}
+#categories {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+#subcat {
+	margin: 0 auto;
+
+}
+#subcat td {
+	padding: 15px 15px;
+}
+#exit {
+    top: 80%;
+    left: 75%;
+    position: absolute;
+    width: 250px;
+}
+#generate {
+	padding: 15px;
+	width: 200px;
+}

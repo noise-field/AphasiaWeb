@@ -26,12 +26,12 @@ def index():
 
 @app.route('/semantics')
 def semantics():
-    return render_template('task.html', kind="semantic")
+    return render_template('semantics.html', kind="semantic")
 
 
 @app.route('/grammar')
 def grammar():
-    return render_template('task.html', kind="grammar")
+    return render_template('grammar.html', kind="grammar")
 
 
 # @app.route('/grammar')
@@ -98,6 +98,7 @@ def topic_semantics():
     generator.change_topic(topic_name)
     logging.info("Semantic generation task status: OK")
     return ""
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

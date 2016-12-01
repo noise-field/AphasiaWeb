@@ -3,109 +3,18 @@
 <html>
 <head>
     <title>Тренажер</title>
-    <script src="static/js/jquery-3.1.1.min.js"></script>
-    <link rel="stylesheet" href="static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
-    <script>
-        var topic_name = "";
-		function getTask() {
-			$('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
-			$.ajax({
-					url: '/grammar_task',
-					data: {topic: topic_name},
-					type: 'POST',
-					success: function(response) {
-						$("#sentence").text(response.task)
-						correct_num = Math.floor(Math.random() * 4)
-						$("#options input").attr('correct', '0')
-						$("#options input:eq(" + correct_num + ")").attr({'value': response.options[0], 'correct': '1'});
-						j = 1;
-						for (i = 0; i < 4 && j < response.options.length; ++i) {
-							if (i == correct_num)
-								continue;
-							$("#options input:eq(" + i + ")").attr('value', response.options[j++]);
-						}
-					}
-				});
-		}
-		$(function() {
-			$('#wrapper').hide();
-			wrapper_margin_top = ($(window).height() - $("#wrapper").height())/2;
-			cat_margin_top = ($(window).height() - $("#subcat").height())/2;
-			$("#wrapper").css('marginTop', wrapper_margin_top);
-			$("#subcat").css('marginTop', cat_margin_top);
-			$('#generate').click(getTask);
-			$('#wrapper #options input').click(function() {
-				$('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
-				if ($(this).attr('correct') == '1')
-					$(this).removeClass().addClass('btn btn-lg btn-success');
-				else
-					$(this).removeClass().addClass('btn btn-lg btn-danger');
-			});
-			$("#categories input").click(function() {
-			    topic_name = $(this).attr('topic');
-				$('#categories').hide();
-				getTask();
-				$('#wrapper').show();
-			});
-		});
-
-    </script>
-    <style>
-			body {
-				background-color: #ebebeb;
-				background-image: url(static/brain.jpg);
-			}
-			#wrapper {
-				margin: 0 auto;
-				padding: 25px 50px;
-				background-color: white;
-				width: 800px;
-				text-align: center;
-			}
-			#sentence {
-				text-align: center;
-				font-family: Arial;
-				font-size: 30px;
-				color: #666;
-			}
-			#options {
-				width: 100%;
-				margin: 30px 0;
-			}
-			#options td, #categories {
-				padding: 15px 0;
-			}
-			#options input {
-				width: 300px;
-			}
-			#categories input {
-				width: 250px;
-				border: 5px solid #00897B;
-			}
-			#task {
-				text-align: center;
-				color: black;
-				text-size: 15px;
-				font-family: Arial;
-				margin-bottom: 15px;
-			}
-			#categories {
-				position: absolute;
-				top: 0px;
-				left: 0px;
-				width: 100%;
-				height: 100%;
-			}
-			#subcat {
-				margin: 0 auto;
-
-			}
-			#subcat td {
-				padding: 15px 15px;
-			}
-
-    </style>
+    <script src="static/js/jquery.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/style_apha.css" rel="stylesheet">
+    <link href="static/css/style_topic.css" rel="stylesheet">
+    <link href="static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <script src="static/js/script.js"></script>
 </head>
 <body>
 <div id="categories">
@@ -127,8 +36,8 @@
         </tr>
     </table>
 </div>
+<a id="exit" class = "btn btn-lg btn-default" href="index"> На главную </a>
 <div id="wrapper">
-    <div id="task">Выберите наиболее подходящее по смыслу слово из списка</div>
     <div id="sentence"></div>
     <table id="options">
         <tr>
@@ -140,7 +49,7 @@
             <td><input type="button" class="btn btn-lg btn-default" value=""></td>
         </tr>
     </table>
-    <input type="button" class="btn btn-lg btn-primary" id="generate" style="padding: 15px;" value="Генерировать">
+    <input type="button" class="btn btn-lg btn-primary" id="generate" value="Ещё">
 </div>
 </body>
 </html>
