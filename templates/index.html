@@ -1,83 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
     <title>Тренажер</title>
-    <script src="static/js/jquery-3.1.1.min.js"></script>
-    <script>
-    $(document).ready(function() {
-    $("#categories input").click(function() {
-        window.location = $(this).attr('topic')
-	});
-	});
 
-    </script>
-    <link rel="stylesheet" href="static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
-    <style>
-			body {
-				background-color: #ebebeb;
-				background-image: url(static/brain.jpg);
-			}
-			#wrapper {
-				margin: 0 auto;
-				padding: 25px 50px;
-				background-color: white;
-				width: 800px;
-				text-align: center;
-			}
-			#sentence {
-				text-align: center;
-				font-family: Arial;
-				font-size: 30px;
-				color: #666;
-			}
-			#options {
-				width: 100%;
-				margin: 30px 0;
-			}
-			#options td, #categories {
-				padding: 15px 0;
-			}
-			#options input {
-				width: 300px;
-			}
-			#categories input {
-				width: 250px;
-				border: 5px solid #00897B;
-			}
-			#task {
-				text-align: center;
-				color: black;
-				text-size: 15px;
-				font-family: Arial;
-				margin-bottom: 15px;
-			}
-			#categories {
-				position: absolute;
-				top: 0px;
-				left: 0px;
-				width: 100%;
-				height: 100%;
-			}
-			#subcat {
-				margin: 0 auto;
+    <!-- Bootstrap Core CSS -->
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
 
-			}
-			#subcat td {
-				padding: 15px 15px;
-			}
+    <!-- Custom CSS -->
+    <link href="static/css/style_apha.css" rel="stylesheet">
 
-    </style>
+    <!-- Custom Fonts -->
+    <link href="static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
 </head>
+
 <body>
-<div id="categories">
-    <table id="subcat">
-        <tr>
-            <td><input type="button" class="btn btn-lg btn-default" value="Задания на смысл" topic="semantics"></td>
-            <td><input type="button" class="btn btn-lg btn-default" value="Задания на форму" topic="grammar"></td>
-        </tr>
-    </table>
-</div>
+
+    <!-- Navigation -->
+    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
+    <nav id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
+            <li class="sidebar-brand">
+                <a href="#" onclick=$("#menu-close").click();>Меню</a>
+            </li>
+            <li>
+                <a href="cabinet" onclick=$("#menu-close").click();>Личный кабинет</a>
+            </li>
+            <li>
+                <a href="semantics" onclick=$("#menu-close").click();>Семантика</a>
+            </li>
+            <li>
+                <a href="grammar" onclick=$("#menu-close").click();>Грамматика</a>
+            </li>
+
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <header id="top" class="header">
+        <div id="header" class="text-vertical-center">
+            <h1>Aphasia Trainer</h1>
+            <br>
+            <a id="topic" href="grammar" class="btn btn-dark btn-lg">Грамматика</a>
+            <a id="topic" href="semantics" class="btn btn-dark btn-lg">Семантика</a>
+        </div>
+    </header>
+    <!-- jQuery -->
+    <script src="static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script>
+    // Closes the sidebar menu
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+  
+    </script>
+
 </body>
+
 </html>
