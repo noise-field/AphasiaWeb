@@ -14,52 +14,7 @@
     <link href="static/css/style_topic.css" rel="stylesheet">
     <link href="static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-    <script>
-        var topic_name = "";
-        function getTask() {
-            $('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
-            $.ajax({
-                    url: '/semantic_task',
-                    data: {topic: topic_name},
-                    type: 'POST',
-                    success: function(response) {
-                        $("#sentence").text(response.task)
-                        correct_num = Math.floor(Math.random() * 4)
-                        $("#options input").attr('correct', '0')
-                        $("#options input:eq(" + correct_num + ")").attr({'value': response.options[0], 'correct': '1'});
-                        j = 1;
-                        for (i = 0; i < 4 && j < response.options.length; ++i) {
-                            if (i == correct_num)
-                                continue;
-                            $("#options input:eq(" + i + ")").attr('value', response.options[j++]);
-                        }
-                    }
-                });
-        }
-        $(function() {
-            $('#wrapper').hide();
-            wrapper_margin_top = ($(window).height() - $("#wrapper").height())/2;
-            cat_margin_top = ($(window).height() - $("#subcat").height())/2;
-            $("#wrapper").css('marginTop', wrapper_margin_top);
-            $("#subcat").css('marginTop', cat_margin_top);
-            $('#generate').click(getTask);
-            $('#wrapper #options input').click(function() {
-                $('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
-                if ($(this).attr('correct') == '1') {
-                    $(this).removeClass().addClass('btn btn-lg btn-success');
-                    setTimeout('getTask()', 1500);
-                }
-                else
-                    $(this).removeClass().addClass('btn btn-lg btn-danger');
-            });
-            $("#categories input").click(function() {
-                topic_name = $(this).attr('topic');
-                $('#categories').hide();
-                getTask();
-                $('#wrapper').show();
-            });
-        });
-    </script>
+    <script src="static/js/script.js"></script>
 </head>
 <body>
 <div id="categories">
