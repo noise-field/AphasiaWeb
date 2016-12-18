@@ -1,10 +1,8 @@
 import semantic_generator
 import grammar_generator
 import logging
-from flask.ext.login import login_user, logout_user, current_user, login_required
 from flask import Flask, request, render_template, jsonify, make_response, redirect
 import sys
-import os.path
 import sqlite3
 import os
 from hashlib import md5
