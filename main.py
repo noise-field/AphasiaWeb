@@ -1,7 +1,9 @@
 import semantic_generator
 import grammar_generator
 import logging
-from flask import Flask, request, render_template, jsonify
+from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask.ext.openid import OpenID
+from flask import Flask, request, render_template, jsonify, g
 import sys
 
 try:
@@ -33,7 +35,9 @@ def semantics():
 def grammar():
     return render_template('grammar.html', kind="grammar")
 
-
+@app.route('/loginpage')
+def loginpage():
+    return render_template("loginpage.html")
 # @app.route('/grammar')
 # @app.route('/semantics')
 # def tasks():
@@ -63,6 +67,11 @@ def get_semantic_task():
         logging.error(str(e))
         return jsonify(**{"task": "Произошла ошибка. Попробуйте обновить страницу",
                           "options": [""] * 4})
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    return render_template("index.html")
 
 
 @app.route('/grammar_task', methods=['POST'])

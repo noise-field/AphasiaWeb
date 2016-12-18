@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Тренажер</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="static/css/style_apha.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+    <!-- Header -->
+    <header id="top" class="header">
+        <div id="header" class="text-vertical-center center">
+            <h1>Aphasia Trainer</h1>
+            <br>
+            <div class="col-md-4 col-md-offset-4">
+                <form method="post" id="login-form" action="/login">
+                    <label for="login">Имя пользователя</label>
+                    <input class="form-control" type="text" id="login" /><br/>
+                    <label for="password">Пароль</label>
+                    <input class="form-control" type="password" id="password" /><br/>
+                    <input class="btn btn-default" type="submit" id="submit" value="Войти"/><br/>
+                </form>
+            </div>
+        </div>
+    </header>
+    <!-- jQuery -->
+    <script src="static/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="static/js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script>
+    // Closes the sidebar menu
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+  
+    </script>
+
+</body>
+
+</html>
