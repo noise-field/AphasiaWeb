@@ -1,0 +1,4 @@
+flask
+gensim
+pymorphy2
+sqlite3
