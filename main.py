@@ -2,9 +2,12 @@ import semantic_generator
 import grammar_generator
 import logging
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from flask.ext.openid import OpenID
-from flask import Flask, request, render_template, jsonify, g
+from flask import Flask, request, render_template, jsonify, make_response, redirect
 import sys
+import os.path
+import sqlite3
+import os
+from hashlib import md5
 
 try:
     from os import getuid
@@ -15,15 +18,29 @@ except ImportError:
 
 app = Flask(__name__)
 AVAILABLE_TASKS = ["grammar", "semantics"]
+PATIENTDB_PATH = "patientdb.sqlite"
+
 
 @app.route('/')
 def hello():
-    return render_template('index.html')
+    try:
+        email = request.cookies['email']
+        password = request.cookies['password']
+        conn = sqlite3.connect(PATIENTDB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM patients WHERE email = ? AND password = ?", [email, password])
+        res = cursor.fetchone()
+        if res:
+            return render_template('index.html', logged_in=True, name=res[1])
+        else:
+            return render_template('index.html', logged_in=False)
+    except KeyError:
+        return render_template('index.html', logged_in=False)
 
 
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    return redirect("/")
 
 
 @app.route('/semantics')
@@ -35,9 +52,6 @@ def semantics():
 def grammar():
     return render_template('grammar.html', kind="grammar")
 
-@app.route('/loginpage')
-def loginpage():
-    return render_template("loginpage.html")
 # @app.route('/grammar')
 # @app.route('/semantics')
 # def tasks():
@@ -69,9 +83,39 @@ def get_semantic_task():
                           "options": [""] * 4})
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template("index.html")
+    if request.method == 'GET':
+        return render_template("loginpage.html")
+    else:
+        email = request.form.get('email')
+        logging.info("Logging in user: {}".format(email))
+        password = request.form.get('password')
+        try:
+            logging.info(request.form)
+            conn = sqlite3.connect(PATIENTDB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("SELECT `password` FROM patients WHERE email=?", [email])
+            res = cursor.fetchone()
+            logging.info(res)
+            if res:
+                logging.info("User found")
+                passhash = md5()
+                passhash.update(password.encode())
+                digest = passhash.hexdigest()
+                if res[0] == digest:
+                    logging.debug("Login successful")
+                    resp = make_response(redirect("/"))
+                    resp.set_cookie("email", email)
+                    resp.set_cookie("password", digest)
+                    return resp
+                else:
+                    return render_template("loginpage.html", error=True)
+            else:
+                return render_template("loginpage.html", error=True)
+        except Exception as e:
+            logging.exception(str(e))
+        return render_template("index.html")
 
 
 @app.route('/grammar_task', methods=['POST'])
@@ -111,4 +155,13 @@ def topic_semantics():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
+    logging.info(os.getcwd())
+    if not os.path.exists(PATIENTDB_PATH):
+        logging.info("Creating a new db file.")
+        conn = sqlite3.connect(PATIENTDB_PATH)
+        cursor = conn.cursor()
+        with open("dbscheme.sql") as f:
+            cursor.executescript(f.read())
+        conn.commit()
+        conn.close()
     app.run(port=getuid() + 1000, debug=True)

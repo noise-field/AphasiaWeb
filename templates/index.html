@@ -50,9 +50,15 @@
     <header id="top" class="header">
         <div id="header" class="text-vertical-center">
             <h1>Aphasia Trainer</h1>
-            <br>
-            <a id="topic" href="grammar" class="btn btn-dark btn-lg">Грамматика</a>
-            <a id="topic" href="semantics" class="btn btn-dark btn-lg">Семантика</a>
+            {% if logged_in %}
+                <br/>
+                <span class="welcome">Здравствуйте, {{ name }}!</span><br/>
+                <a id="topic" href="grammar" class="btn btn-dark btn-lg">Грамматика</a>
+                <a id="topic" href="semantics" class="btn btn-dark btn-lg">Семантика</a>
+            {% else %}
+                <br/>
+                <a id="login-button" href="/login" class="btn btn-dark btn-lg">Войти</a>
+            {% endif %}
         </div>
     </header>
     <!-- jQuery -->
