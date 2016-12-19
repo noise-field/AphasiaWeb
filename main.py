@@ -16,7 +16,7 @@ except ImportError:
 
 app = Flask(__name__)
 AVAILABLE_TASKS = ["grammar", "semantics"]
-PATIENTDB_PATH = "patientdb.sqlite"
+PATIENTDB_PATH = "patientdb.db"
 
 
 @app.route('/')
@@ -40,6 +40,13 @@ def hello():
 def index():
     return redirect("/")
 
+
+@app.route('/logout')
+def logout():
+    resp = make_response(redirect("/"))
+    resp.set_cookie('email', '', expires=0)
+    resp.set_cookie('password', '', expires=0)
+    return resp
 
 @app.route('/semantics')
 def semantics():
@@ -79,6 +86,53 @@ def get_semantic_task():
         logging.error(str(e))
         return jsonify(**{"task": "Произошла ошибка. Попробуйте обновить страницу",
                           "options": [""] * 4})
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == "GET":
+        try:
+            email = request.cookies['email']
+            password = request.cookies['password']
+            conn = sqlite3.connect(PATIENTDB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM patients WHERE email = ? AND password = ?", [email, password])
+            res = cursor.fetchone()
+            if res:
+                return render_template('index.html', logged_in=True, name=res[1])
+            else:
+                return render_template('registrationpage.html')
+        except KeyError:
+            return render_template('registrationpage.html')
+    elif request.method == "POST":
+        try:
+            email = request.form['email']
+            assert len(email) > 5, "Неверный формат почтового адреса"
+            password = request.form['password']
+            password_repeat = request.form['password_repeat']
+            assert password == password_repeat, "Пароли не совпадают"
+            first_name = request.form['first_name']
+            middle_name = request.form['middle_name']
+            last_name = request.form['last_name']
+            conn = sqlite3.connect(PATIENTDB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM patients WHERE email = ?", [email])
+            res = cursor.fetchone()
+            if res:
+                return render_template('registrationpage.html', error="Пользователь с такой почтой уже зарегистрирован")
+            else:
+                query = "INSERT INTO patients (first_name, middle_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)"
+                hash = md5()
+                hash.update(password.encode())
+                password = hash.hexdigest()
+                cursor.execute(query, [first_name, middle_name, last_name, email, password])
+                conn.commit()
+                conn.close()
+                return render_template("/loginpage.html", message="Регистрация успешна", error=False)
+        except KeyError:
+            return render_template('registrationpage.html', error="Не все поля заполнены.")
+        except AssertionError as e:
+            render_template('registrationpage.html', error=str(e))
 
 
 @app.route('/login', methods=['GET', 'POST'])

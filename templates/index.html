@@ -33,16 +33,27 @@
             <li class="sidebar-brand">
                 <a href="#" onclick=$("#menu-close").click();>Меню</a>
             </li>
-            <li>
-                <a href="cabinet" onclick=$("#menu-close").click();>Личный кабинет</a>
-            </li>
+            {% if logged_in %}
+{#            <li>#}
+{#                <a href="cabinet" onclick=$("#menu-close").click();>Личный кабинет</a>#}
+{#            </li>#}
             <li>
                 <a href="semantics" onclick=$("#menu-close").click();>Семантика</a>
             </li>
             <li>
                 <a href="grammar" onclick=$("#menu-close").click();>Грамматика</a>
             </li>
-
+            <li>
+                <a href="logout" onclick=$("#menu-close").click();>Выйти</a>
+            </li>
+            {% else %}
+            <li>
+                <a href="login" onclick=$("#menu-close").click();>Войти</a>
+            </li>
+            <li>
+                <a href="login" onclick=$("#menu-close").click();>Зарегистрироваться</a>
+            </li>
+            {% endif %}
         </ul>
     </nav>
 
@@ -58,6 +69,7 @@
             {% else %}
                 <br/>
                 <a id="login-button" href="/login" class="btn btn-dark btn-lg">Войти</a>
+                <a id="login-button" href="/register" class="btn btn-dark btn-lg">Зарегистрироваться</a>
             {% endif %}
         </div>
     </header>
