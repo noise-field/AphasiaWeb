@@ -33,6 +33,9 @@
                 {% if error %}
                     <span class="error">Неверное имя пользователя или пароль!</span>
                 {% endif %}
+                {% if message %}
+                    <span class="message">{{ message }}</span>
+                {% endif %}
                 <form method="post" id="login-form" action="/login">
                     <label for="email">Электронная почта</label>
                     <input class="form-control" type="text" id="email" name="email" placeholder="email@email.ru"/><br/>
