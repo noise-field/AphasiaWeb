@@ -37,6 +37,11 @@
 {#            <li>#}
 {#                <a href="cabinet" onclick=$("#menu-close").click();>Личный кабинет</a>#}
 {#            </li>#}
+            {% if admin_role %}
+            <li>
+                <a href="/admin" onclick=$("#menu-close").click();>Панель управления</a>
+            </li>
+            {% endif %}
             <li>
                 <a href="semantics" onclick=$("#menu-close").click();>Семантика</a>
             </li>

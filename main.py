@@ -5,7 +5,9 @@ from flask import Flask, request, render_template, jsonify, make_response, redir
 import sys
 import sqlite3
 import os
+import time
 from hashlib import md5
+from flask import abort
 
 try:
     from os import getuid
@@ -26,14 +28,33 @@ def hello():
         password = request.cookies['password']
         conn = sqlite3.connect(PATIENTDB_PATH)
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM patients WHERE email = ? AND password = ?", [email, password])
+        cursor.execute("SELECT first_name, admin_role FROM users WHERE email = ? AND password = ?", [email, password])
         res = cursor.fetchone()
         if res:
-            return render_template('index.html', logged_in=True, name=res[1])
+            admin_role = bool(res[1])
+            return render_template('index.html', logged_in=True, name=res[0], admin_role=admin_role)
         else:
             return render_template('index.html', logged_in=False)
     except KeyError:
         return render_template('index.html', logged_in=False)
+
+
+@app.route('/admin')
+def admin():
+    try:
+        email = request.cookies['email']
+        password = request.cookies['password']
+        conn = sqlite3.connect(PATIENTDB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT admin_role FROM users WHERE email = ? AND password = ?", [email, password])
+        res = cursor.fetchone()
+        if res:
+            if res[0] == 1:
+                return render_template("admin.html")
+        abort(404)
+    except Exception as e:
+        logging.exception(e)
+        abort(404)
 
 
 @app.route('/index')
@@ -48,14 +69,72 @@ def logout():
     resp.set_cookie('password', '', expires=0)
     return resp
 
-@app.route('/semantics')
+@app.route('/semantics', methods=['GET'])
 def semantics():
-    return render_template('semantics.html', kind="semantic")
+    if 'taskid' in request.args:
+        try:
+            email = request.cookies['email']
+            password = request.cookies['password']
+            conn = sqlite3.connect(PATIENTDB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM users WHERE email = ? AND password = ?", [email, password])
+            res = cursor.fetchone()
+            if res:
+                user_id = res[0]
+            else:
+                raise Exception("User not found")
+            task_id = request.args['taskid']
+            result = request.args['right']
+            cursor.execute("INSERT INTO sessions (task_id, user_id, task_type, time, result) VALUES (?, ?, ?, ?, ?)",
+                           [task_id, user_id, "semantics", time.time(), result])
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            logging.exception(e)
+    conn = sqlite3.connect(PATIENTDB_PATH)
+    cursor = conn.cursor()
+    query = "SELECT id, name, alias FROM tasks;"
+    cursor.execute(query)
+    topics = dict()
+    for line in cursor:
+        topics[line[0]] = dict()
+        topics[line[0]]['name'] = line[1]
+        topics[line[0]]['alias'] = line[2]
+    return render_template('semantics.html', kind="semantic", topics=topics)
 
 
-@app.route('/grammar')
+@app.route('/grammar', methods=['GET'])
 def grammar():
-    return render_template('grammar.html', kind="grammar")
+    if 'taskid' in request.args:
+        try:
+            email = request.cookies['email']
+            password = request.cookies['password']
+            conn = sqlite3.connect(PATIENTDB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM users WHERE email = ? AND password = ?", [email, password])
+            res = cursor.fetchone()
+            if res:
+                user_id = res[0]
+            else:
+                raise Exception("User not found")
+            task_id = request.args['taskid']
+            result = request.args['right']
+            cursor.execute("INSERT INTO sessions (task_id, user_id, task_type, time, result) VALUES (?, ?, ?, ?, ?)",
+                           [task_id, user_id, "grammar", time.time(), result])
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            logging.exception(e)
+    conn = sqlite3.connect(PATIENTDB_PATH)
+    cursor = conn.cursor()
+    query = "SELECT id, name, alias FROM tasks;"
+    cursor.execute(query)
+    topics = dict()
+    for line in cursor:
+        topics[line[0]] = dict()
+        topics[line[0]]['name'] = line[1]
+        topics[line[0]]['alias'] = line[2]
+    return render_template('grammar.html', kind="grammar", topics=topics)
 
 # @app.route('/grammar')
 # @app.route('/semantics')
@@ -96,7 +175,7 @@ def register():
             password = request.cookies['password']
             conn = sqlite3.connect(PATIENTDB_PATH)
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM patients WHERE email = ? AND password = ?", [email, password])
+            cursor.execute("SELECT * FROM users WHERE email = ? AND password = ?", [email, password])
             res = cursor.fetchone()
             if res:
                 return render_template('index.html', logged_in=True, name=res[1])
@@ -116,14 +195,15 @@ def register():
             last_name = request.form['last_name']
             conn = sqlite3.connect(PATIENTDB_PATH)
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM patients WHERE email = ?", [email])
+            cursor.execute("SELECT * FROM users WHERE email = ?", [email])
             res = cursor.fetchone()
             if res:
                 return render_template('registrationpage.html', error="Пользователь с такой почтой уже зарегистрирован")
             else:
-                query = "INSERT INTO patients (first_name, middle_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)"
+                query = "INSERT INTO users (first_name, middle_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)"
                 hash = md5()
                 hash.update(password.encode())
+                logging.info("Creating a user: {}".format(email))
                 password = hash.hexdigest()
                 cursor.execute(query, [first_name, middle_name, last_name, email, password])
                 conn.commit()
@@ -138,7 +218,7 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template("loginpage.html")
+        return render_template("loginpage.html", error=False)
     else:
         email = request.form.get('email')
         logging.info("Logging in user: {}".format(email))
@@ -147,7 +227,7 @@ def login():
             logging.info(request.form)
             conn = sqlite3.connect(PATIENTDB_PATH)
             cursor = conn.cursor()
-            cursor.execute("SELECT `password` FROM patients WHERE email=?", [email])
+            cursor.execute("SELECT `password` FROM users WHERE email=?", [email])
             res = cursor.fetchone()
             logging.info(res)
             if res:

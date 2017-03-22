@@ -3,6 +3,7 @@ var task_type = '';
 var num_right = 0;
 var num_done = 0;
 var mistake = false;
+var task_id = 0;
 
 function getTask() {
     $('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
@@ -58,9 +59,10 @@ $(function() {
             else {
                 alert("Вы выполнили верно " + num_right + " из " + num_done + " заданий!");
                 num_done = 0;
+                var last_result = num_right.toString();
                 num_right = 0;
                 // $(location).attr('href', '/index');
-                document.location.href = path_back;
+                document.location.href = path_back + "?right=" + last_result + "&taskid=" + task_id.toString();
             }
         }
         else
@@ -71,6 +73,7 @@ $(function() {
     });
     $("#categories input").click(function() {
         topic_name = $(this).attr('topic');
+        task_id = $(this).attr('taskid');
         $('#categories').hide();
         num_done = 0;
         num_right = 0;

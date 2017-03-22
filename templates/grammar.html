@@ -19,24 +19,16 @@
 <body>
 <div id="categories">
     <table id="subcat">
+    {% for key, value in topics.items() %}
         <tr>
-            <td><input type="button" class="btn btn-lg btn-default" value="Больница" topic="hospital"></td>
-            <td><input type="button" class="btn btn-lg btn-default" value="Семья" topic="family"></td>
-            <td><input type="button" class="btn btn-lg btn-default" value="Профессии" topic="profession"></td>
+        <td><input type="button" class="btn btn-lg btn-default" value="{{ value.name }}" topic="{{ value.alias }}" taskid="{{ key }}"></td>
         </tr>
+    {% endfor %}
         <tr>
-            <td><input type="button" class="btn btn-lg btn-default" value="Части тела" topic="body"></td>
-            <td><input type="button" class="btn btn-lg btn-default" value="Дом" topic="house"></td>
-            <td><input type="button" class="btn btn-lg btn-default" value="Одежда" topic="apparel"></td>
-        </tr>
-        <tr>
-            <td><input type="button" class="btn btn-lg btn-default" value="Еда" topic="food"></td>
-            <td><input type="button" class="btn btn-lg btn-default" value="Животные" topic="animals"></td>
-            <td><input type="button" class="btn btn-lg btn-default" value="Транспорт" topic="transport"></td>
+            <td><a id="exit" class = "btn btn-lg btn-info" href="index"> На главную </a></td>
         </tr>
     </table>
 </div>
-<a id="exit" class = "btn btn-lg btn-default" href="index"> На главную </a>
 <div id="wrapper">
     <div id="sentence"></div>
     <table id="options">
@@ -49,7 +41,7 @@
             <td><input type="button" class="btn btn-lg btn-default" value=""></td>
         </tr>
     </table>
-    <input type="button" class="btn btn-lg btn-primary" id="generate" value="Ещё">
+    <a id="exit" class = "btn btn-lg btn-info" href="index"> На главную </a>
 </div>
 </body>
 </html>
