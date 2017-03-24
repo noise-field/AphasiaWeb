@@ -1,4 +1,5 @@
 import pymorphy2
+import sqlite3
 import random
 import logging
 import os
@@ -6,6 +7,7 @@ import sys
 
 DATA_PATH = "data"
 CASE_TAGS = ["gent", "datv", "accs", "ablt", "loct"]
+PATIENTDB_PATH = "patientdb.db"
 
 class SingletonGenerator(type):
     _instances = {}
@@ -20,22 +22,40 @@ class TaskGenerator(metaclass=SingletonGenerator):
     def __init__(self):
         self.__morph = pymorphy2.MorphAnalyzer()
         self.data = dict()
-        with open(os.path.join(DATA_PATH, "topic_index.txt"), encoding="utf-8") as index:
-            for topic in index:
-                topic = topic.strip()
-                self.data[topic] = dict()
-                with open(os.path.join(DATA_PATH, "{}.txt".format(topic)), encoding="utf-8") as topic_file:
-                    buffer = list()
-                    self.data[topic]['tasks'] = dict()
-                    for line in topic_file:
-                        line = line.strip()
-                        if line != "":
-                            buffer.append(line)
-                        else:
-                            self.data[topic]['tasks'][buffer[0]] = buffer[1:]
-                            buffer = list()
-                with open(os.path.join(DATA_PATH, "{}_subjects.txt".format(topic)), encoding="utf-8") as subject_file:
-                    self.data[topic]['subjects'] = subject_file.read().strip().split("\n")
+        conn = sqlite3.connect(PATIENTDB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, task_markup, subjects_list FROM tasks;")
+        try:
+            for task in cursor:
+                self.data[task[0]] = dict()
+                buffer = list()
+                self.data[task[0]]['tasks'] = dict()
+                for line in task[1].strip().split("\n"):
+                    line = line.strip()
+                    if line != "":
+                        buffer.append(line)
+                    else:
+                        self.data[task[0]]['tasks'][buffer[0]] = buffer[1:]
+                        buffer = list()
+                self.data[task[0]]['subjects'] = task[2].strip().split("\n")
+        except Exception as e:
+            logging.exception(e)
+        # with open(os.path.join(DATA_PATH, "topic_index.txt"), encoding="utf-8") as index:
+        #     for topic in index:
+        #         topic = topic.strip()
+        #         self.data[topic] = dict()
+        #         with open(os.path.join(DATA_PATH, "{}.txt".format(topic)), encoding="utf-8") as topic_file:
+        #             buffer = list()
+        #             self.data[topic]['tasks'] = dict()
+        #             for line in topic_file:
+        #                 line = line.strip()
+        #                 if line != "":
+        #                     buffer.append(line)
+        #                 else:
+        #                     self.data[topic]['tasks'][buffer[0]] = buffer[1:]
+        #                     buffer = list()
+        #         with open(os.path.join(DATA_PATH, "{}_subjects.txt".format(topic)), encoding="utf-8") as subject_file:
+        #             self.data[topic]['subjects'] = subject_file.read().strip().split("\n")
         logging.info(self.data)
 
     def __form_verb(self, verb):

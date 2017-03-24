@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/css/bulma.css"/>
+    <script src="static/js/00af3f572c.js"></script>
+    <meta charset="UTF-8">
+    <title>Taskee</title>
+</head>
+<body>
+<section class="hero is-primary">
+    <div class="hero-head">
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-left">
+                    <a class="nav-item is-brand" href="/"><h1 class="subtitle">Taskee</h1></a>
+                </div>
+                <div class="nav-right nav-menu">
+                    <a class="nav-item" href="#">
+                        <div>{{ admin_name }} &emsp;</div>
+                        <span class="icon">
+                            <i class="fa fa-user-circle"></i>
+                        </span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+        <!--<h1 class="subtitle">Aphasia training</h1>-->
+    </div>
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">Добавление пользователя</h1>
+        </div>
+    </div>
+    <div class="hero-foot">
+
+    </div>
+</section>
+<section class="section is-centered">
+    <div class="columns">
+        <div class="column is-one-third is-offset-one-third">
+            {% if message%}
+                <div class="has-text-centered is-centered">
+                {{ message }}<br/><br/>
+                </div>
+            {% endif %}
+        {% if message and error or not message and not error %}
+        <form action="/add_user" method="POST" class="form">
+            <label for="email" class="label">Электронная почта</label>
+            <input class="input" type="text" id="email" name="email" placeholder="email@email.ru"/><br/>
+            <label for="password" class="label">Пароль</label>
+            <input class="input" type="password" id="password" name="password" placeholder="*******"/><br/>
+            <label for="password_repeat" class="label">Повторите пароль</label>
+            <input class="input" type="password" id="password_repeat" name="password_repeat" placeholder="*******"/><br/>
+            <label for="first_name" class="label">Имя</label>
+            <input class="input" type="text" id="first_name" name="first_name" placeholder="Иван"/><br/>
+            <label for="last_name" class="label">Фамилия</label>
+            <input class="input" type="text" id="last_name" name="last_name" placeholder="Иванович"/><br/>
+            <label for="middle_name" class="label">Отчество</label>
+            <input class="input" type="text" id="middle_name" name="middle_name" placeholder="Иванов"/><br/><br/>
+            <input class="checkbox" type="checkbox" name="is_admin"/> Администратор<br/><br/>
+            <input class="button is-info is-centered" type="submit" id="submit" value="Создать"/><br/>
+        </form>
+        {% endif %}
+        <div class="content is-centered has-text-centered">
+        <br/><a class="button is-info is-centered" href="/admin" >Назад</a>
+            </div>
+    </div>
+</section>
+</body>
+</html>

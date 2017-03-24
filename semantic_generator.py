@@ -50,6 +50,13 @@ class TaskGenerator(metaclass=SingletonGenerator):
         self.__morph = pymorphy2.MorphAnalyzer()
         self.__model = vec.Word2Vec.load('word2vec')
 
+    def __abstract(self, file):
+        nouns = []
+        with open(file, 'r', encoding='utf-8') as f:
+            for noun in f:
+                nouns.append(noun.strip())
+        return nouns
+
     def __form_verb(self, verb):
         # Puts the given verb in Present Tense and 3rd person form
         return self.__morph.parse(verb)[0].inflect({'3per'}).word
@@ -80,10 +87,14 @@ class TaskGenerator(metaclass=SingletonGenerator):
         far_off = self.__model.most_similar(negative=[noun], topn=seed)
         new_nouns = []
 
+        abstract_nouns = self.__abstract('abstract_nouns.txt')
         for word, _ in far_off:
             if not re.search('^[а-я]*$', word):
                 continue
             for row in self.__morph.parse(word)[:3]:
+                if row.normal_form in abstract_nouns:
+                    logging.info("{} is abstract".format(word))
+                    break
                 if row.tag.POS in ['ADJF', 'NUMR']:
                     break
                 if self.__is_bad(row.tag):

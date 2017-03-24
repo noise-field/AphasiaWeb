@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/css/bulma.css"/>
+    <script src="static/js/00af3f572c.js"></script>
+    <meta charset="UTF-8">
+    <title>Taskee</title>
+</head>
+<body>
+<section class="hero is-primary">
+    <div class="hero-head">
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-left">
+                    <a class="nav-item is-brand" href="/"><h1 class="subtitle">Taskee</h1></a>
+                </div>
+                <div class="nav-right nav-menu">
+                    <a class="nav-item" href="#">
+                        <div>{{ admin_name }} &emsp;</div>
+                        <span class="icon">
+                            <i class="fa fa-user-circle"></i>
+                        </span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+        <!--<h1 class="subtitle">Aphasia training</h1>-->
+    </div>
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">Создание теста</h1>
+        </div>
+    </div>
+    <div class="hero-foot">
+
+    </div>
+</section>
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-half">
+                            {% if message%}
+                <div class="has-text-centered is-centered">
+                {{ message }}<br/><br/>
+                </div>
+            {% endif %}
+        {% if message and error or not message and not error %}
+                <h1 class="title">Создать новый тест</h1>
+                <form action="/add_test" class="control" method="post">
+                    <label class="label">Название теста</label>
+                    <p class="control"><input type="text" name="name" id="name" placeholder="Введите название..." class="input"/></p>
+                    <label class="label">Тест</label>
+                    <p class="control"><textarea id="markup" name="markup" class="textarea"
+                                                 placeholder="Разметка теста..."></textarea></p>
+                    <label class="label">Деятели</label>
+                                        <p class="control"><textarea id="subjects" name="subjects" class="textarea"
+                                                 placeholder="Деятели..."></textarea></p>
+                    <p class="control">
+                        <input type="submit" class="button is-primary"/>
+                    </p>
+                </form>
+            </div>
+            <div class="column">
+                <h2 class="subtitle">Создание теста</h2>
+                <div class="content">                    Для создания теста вам необходимо подобрать тематический материал и разметить его в соответствии с
+                    несложным языком разметки. Сначала вы задаете глагол в неопределенной форме, затем - возможные
+                    варианты
+                    ответа, каждый с новой строки. Ответом может быть:
+                <ul>
+                    <li>существительное</li>
+                    <li>существительное с предлогом</li>
+                    <li>предлог + прилагательное + существительное</li>
+                </ul>
+                После каждого ответа через пробел нужно указать падеж (для винительного падежа указывать не обязательно):<br/>
+</div>
+                <table class="table">
+                    <colgroup>
+                        <col width="9%"/>
+                        <col width="22%"/>
+                        <col width="31%"/>
+                        <col width="37%"/>
+                    </colgroup>
+                    <thead valign="bottom">
+                    <tr>
+                        <th>Граммема</th>
+                        <th class="head">Значение</th>
+                        <th class="head">Пояснение</th>
+                        <th class="head">Примеры</th>
+                    </tr>
+                    </thead>
+                    <tbody valign="top">
+                    <tr>
+                        <td>nomn</td>
+                        <td>именительный</td>
+                        <td>Кто? Что?</td>
+                        <td><strong>хомяк</strong> ест</td>
+                    </tr>
+                    <tr>
+                        <td>gent</td>
+                        <td>родительный</td>
+                        <td>Кого? Чего?</td>
+                        <td>у нас нет <strong>хомяка</strong></td>
+                    </tr>
+                    <tr>
+                        <td>datv</td>
+                        <td>дательный</td>
+                        <td>Кому? Чему?</td>
+                        <td>сказать <strong>хомяку</strong> спасибо</td>
+                    </tr>
+                    <tr>
+                        <td>accs</td>
+                        <td>винительный</td>
+                        <td>Кого? Что?</td>
+                        <td>хомяк читает <strong>книгу</strong></td>
+                    </tr>
+                    <tr>
+                        <td>ablt</td>
+                        <td>творительный</td>
+                        <td>Кем? Чем?</td>
+                        <td>зерно съедено <strong>хомяком</strong></td>
+                    </tr>
+                    <tr>
+                        <td>loct</td>
+                        <td>предложный</td>
+                        <td>О ком? О чём? и т.п.</td>
+                        <td>хомяка несут в <strong>корзинке</strong></td>
+                    </tr>
+                    <tr>
+                        <td>voct</td>
+                        <td>звательный</td>
+                        <td>Его формы используются
+                            при обращении к человеку.
+                        </td>
+                        <td><strong>Саш</strong>, пойдем в кино.</td>
+                    </tr>
+                    <tr>
+                        <td>gen2</td>
+                        <td>второй родительный
+                            (частичный)
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>ложка <strong>сахару</strong>
+                            <em>(gent - производство сахара)</em>;
+                            стакан <strong>яду</strong>
+                            <em>(gent - нет яда)</em></td>
+                    </tr>
+                    <tr>
+                        <td>acc2</td>
+                        <td>второй винительный</td>
+                        <td>&nbsp;</td>
+                        <td>записался в <strong>солдаты</strong></td>
+                    </tr>
+                    <tr>
+                        <td>loc2</td>
+                        <td>второй предложный
+                            (местный)
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>я у него в <strong>долгу</strong>
+                            <em>(loct - напоминать о долге)</em>;
+                            висит в <strong>шкафу</strong>
+                            <em>(loct - монолог о шкафе)</em>;
+                            весь в <strong>снегу</strong>
+                            <em>(loct - писать о снеге)</em></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a class="is-small" href="http://pymorphy2.readthedocs.io/en/latest/user/grammemes.html">Подробнее о тегах...</a><br/><br/>
+                <div class="content">
+                    Затем вам необходимо задать деятелей: это могут быть любые существительные в именительном падеже<br/>
+                    <h3>Пример готового теста:</h3>
+                    <figure class="highlight">
+                        <pre>
+                            <code>
+проводить
+медицинский осмотр
+
+ухаживать
+за больным ablt
+за пациентом ablt
+
+делать
+укол
+                            </code>
+                        </pre>
+                    </figure>
+                </div>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+</section>
+</body>
+</html>

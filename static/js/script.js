@@ -9,7 +9,7 @@ function getTask() {
     $('#wrapper #options input').removeClass().addClass('btn btn-lg btn-default');
     $.ajax({
         url: task_type,
-        data: {topic: topic_name},
+        data: {taskid: task_id},
         type: 'POST',
         success: function(response) {
             $("#sentence").text(response.task)
