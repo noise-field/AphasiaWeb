@@ -40,6 +40,8 @@ class TaskGenerator(metaclass=SingletonGenerator):
                 self.data[task[0]]['subjects'] = task[2].strip().split("\n")
         except Exception as e:
             logging.exception(e)
+        finally:
+            conn.close()
         # with open(os.path.join(DATA_PATH, "topic_index.txt"), encoding="utf-8") as index:
         #     for topic in index:
         #         topic = topic.strip()

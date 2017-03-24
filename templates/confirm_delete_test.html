@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/css/bulma.css"/>
+    <script src="static/js/00af3f572c.js"></script>
+    <meta charset="UTF-8">
+    <title>Taskee</title>
+</head>
+<body>
+<section class="hero is-primary">
+    <div class="hero-head">
+        <div class="container">
+            <nav class="nav">
+                <div class="nav-left">
+                    <a class="nav-item is-brand" href="/"><h1 class="subtitle">Taskee</h1></a>
+                </div>
+                <div class="nav-right nav-menu">
+                    <a class="nav-item" href="#">
+                        <div>{{ admin_name }} &emsp;</div>
+                        <span class="icon">
+                            <i class="fa fa-user-circle"></i>
+                        </span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+        <!--<h1 class="subtitle">Aphasia training</h1>-->
+    </div>
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">Удаление теста</h1>
+        </div>
+    </div>
+    <div class="hero-foot">
+
+    </div>
+</section>
+<section class="section has-text-centered">
+    {% if error %}
+    {{ message }}<br/><br/>
+        <a href="/admin" class="button is-info">Назад</a>
+    {% else %}
+    <div class="container is-fullheight">
+        Вы действительно хотите удалить тест {{ name }}?
+        <br/><br/>
+        <form action="/delete_test" method="post" class="is-vcentered">
+            <input type="hidden" name="id" value="{{ test_id }}" />
+            <input type="submit" value="Удалить" class="button is-danger"/>
+            <a href="/admin" class="button is-info">Назад</a>
+        </form>
+
+    </div>
+    {% endif %}
+</section>
+</body>
+</html>

@@ -194,6 +194,42 @@ def add_user_admin():
         logging.exception(e)
         abort(404)
 
+@app.route('/delete_test', methods=['GET', 'POST'])
+def delete_test():
+    try:
+        email = request.cookies['email']
+        password = request.cookies['password']
+        conn = sqlite3.connect(PATIENTDB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT admin_role, first_name, last_name, id FROM users WHERE email = ? AND password = ?",
+                       [email, password])
+        res = cursor.fetchone()
+        if res:
+            if res[0] == 1:
+                admin_name = res[1] + res[2]
+                if request.method == "GET":
+                    if 'id' in request.args:
+                        test_id = request.args['id']
+                        logging.info(test_id)
+                        logging.info(res[3])
+                        query = "SELECT name FROM tasks WHERE id = ?"
+                        cursor.execute(query, [test_id])
+                        test = cursor.fetchone()
+                        name = test[0]
+                        conn.close()
+                        return render_template("confirm_delete_test.html", test_id=test_id, name=name, admin_name=admin_name,
+                                               error=False)
+                elif request.method == "POST":
+                    if 'id' in request.form:
+                        query = "DELETE FROM tasks WHERE id = ?;"
+                        cursor.execute(query, [request.form['id']])
+                        conn.commit()
+                        conn.close()
+                        return redirect("/admin")
+        abort(404)
+    except Exception as e:
+        logging.exception(e)
+        abort(404)
 
 @app.route('/delete_user', methods=['GET', 'POST'])
 def delete_user():
@@ -214,14 +250,14 @@ def delete_user():
                         logging.info(user_id)
                         logging.info(res[3])
                         if int(user_id) == int(res[3]):
-                            return render_template("confirm_delete.html", error=True,
+                            return render_template("confirm_delete_user.html", error=True,
                                                    message="Экзистенциальная ошибка: вы не можете удалить самого себя!")
                         query = "SELECT first_name, last_name FROM users WHERE id = ?"
                         cursor.execute(query, [user_id])
                         user = cursor.fetchone()
                         name = "{} {}".format(user[0], user[1])
                         conn.close()
-                        return render_template("confirm_delete.html", user_id=user_id, name=name, admin_name=admin_name,
+                        return render_template("confirm_delete_user.html", user_id=user_id, name=name, admin_name=admin_name,
                                                error=False)
                 elif request.method == "POST":
                     if 'id' in request.form:
@@ -271,13 +307,12 @@ def semantics():
             logging.exception(e)
     conn = sqlite3.connect(PATIENTDB_PATH)
     cursor = conn.cursor()
-    query = "SELECT id, name, alias FROM tasks;"
+    query = "SELECT id, name FROM tasks;"
     cursor.execute(query)
     topics = dict()
     for line in cursor:
         topics[line[0]] = dict()
         topics[line[0]]['name'] = line[1]
-        topics[line[0]]['alias'] = line[2]
     return render_template('semantics.html', kind="semantic", topics=topics)
 
 
@@ -333,7 +368,7 @@ def grammar():
 def get_semantic_task():
     try:
         generator = semantic_generator.TaskGenerator()
-        generator.change_topic(request.form['topic'])
+        generator.change_topic(int(request.form['taskid']))
         new_task = generator.get_random(300)
         logging.info(new_task)
         # return json.dumps(new_task)
