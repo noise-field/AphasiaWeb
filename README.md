@@ -10,5 +10,6 @@
 https://drive.google.com/open?id=0B5CIZTx78m9AeGN5Sy1JS2F1ZHc
 
 ## Статьи:
-Tushkanov V., Drozd O, Davoian A. (2016, July) . Poster session presented at the Summer Neurolinguistics School at National Research University Higher School of Economics, Moscow, Russia.
-Tushkanov V., Dereza O. (2016, August). Verb-Noun Collocation and Government Model Extraction from Large Corpora, Proceedings of Concept Discovery in Unstructured Data, Moscow, Russia
+1. Tushkanov V., Drozd O, Davoian A. (2016, July) . Poster session presented at the Summer Neurolinguistics School at National Research University Higher School of Economics, Moscow, Russia.
+
+2. Tushkanov V., Dereza O. (2016, August). Verb-Noun Collocation and Government Model Extraction from Large Corpora, Proceedings of Concept Discovery in Unstructured Data, Moscow, Russia
